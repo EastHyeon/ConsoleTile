@@ -103,41 +103,24 @@ int	main() {
     int width = 300;
     int height = 200;
 
-    HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+    wchar_t** buffer = (wchar_t**)malloc(sizeof(wchar_t*) * height);
 
-    // 콘솔 스크린 버퍼 생성
-    COORD bufferSize = { width * 25 + 1, height };
-    SMALL_RECT windowRect = { 0, 0, (width * 25 + 1) - 1, height - 1 };
-    CHAR_INFO* buffer = (CHAR_INFO*)malloc((width * 25 + 1) * height * sizeof(CHAR_INFO));
-
-    wchar_t** buffer2D = (wchar_t**)malloc(sizeof(wchar_t*) * height);
     for (int i = 0; i < height; i++)
     {
-        buffer2D[i] = (wchar_t*)malloc(sizeof(wchar_t) * (width * 25 + 1));
+        buffer[i] = (wchar_t*)malloc(sizeof(wchar_t) * (width * 25 + 1));
     }
 
     COORD textPos = { 0, 0 };
 
     for (int i = 0; i < height; i++)
     {
-        buffer2D[i][0] = '\0';
+        buffer[i][0] = '\0';
     }
 
-    WriteImageByWidth("TestImage.png", buffer2D, width, height);
+    WriteImageByWidth("TestImage.png", buffer, width, height);
 
-    for (int i = 0; i < (width * 25 + 1) * height; i++) {
-        int y = i / (width * 25 + 1);
-        int x = i % (width * 25 + 1);
-
-        if (i != 0 && x == width * 25)
-            buffer[i].Char.UnicodeChar = '\n';
-        else {
-            buffer[i].Char.UnicodeChar = buffer2D[y][x];
-            buffer[i].Attributes = 0x000F;
-        }
+    for (int i = 0; i < height; i++)
+    {
+        wprintf(L"%ls\n", buffer[i]);
     }
-
-    WriteConsoleOutputW(console, buffer, bufferSize, textPos, &windowRect);
-
-    free(buffer);
 }
