@@ -59,23 +59,21 @@ void SetFontSize(int size) {
 
 int WriteImageByWidth(const char* fileName, wchar_t** buffer, int width, int height) {
 
-    IplImage* sourceImage;
-    sourceImage = cvLoadImage(fileName, 1);
+    IplImage* image = cvLoadImage(fileName, 3);
 
-    if (!sourceImage) {
+    if (!image) {
         printf("Could not open Image file\n");
         printf("%s", fileName);
     }
 
-    IplImage* titleImage = cvCreateImage(cvSize(width, height), IPL_DEPTH_8U, 1);
-
-    cvResize(sourceImage, titleImage, CV_INTER_LINEAR);
+    IplImage* resizedImage = cvCreateImage(cvSize(width, height), IPL_DEPTH_8U, 3);
+    cvResize(image, resizedImage, CV_INTER_LINEAR);
 
     for (int y = 0; y < height; y++)
     {
         for (int x = 0; x < width; x++)
         {
-            CvScalar value = cvGet2D(titleImage, y, x);
+            CvScalar value = cvGet2D(resizedImage, y, x);
             unsigned char R = value.val[2];
             unsigned char G = value.val[1];
             unsigned char B = value.val[0];
@@ -96,90 +94,50 @@ void Init() {
     wprintf(L"출력모드 유니코드로 설정\n");
     SetConsoleFont(L"NSimSun"); // 폰트를 NsimSun으로 변경
     wprintf(L"현재 폰트 NSimSun으로 변경\n");
-    SetFontSize(4);
+    SetFontSize(1);
 }
 
 int	main() {
     Init();
 
-    int width = 150;
-    int height = 100;
+    int width = 300;
+    int height = 200;
 
-    wchar_t** buffer = (wchar_t**)malloc(sizeof(wchar_t*) * height);
+    HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    // 콘솔 스크린 버퍼 생성
+    COORD bufferSize = { width * 25 + 1, height };
+    SMALL_RECT windowRect = { 0, 0, (width * 25 + 1) - 1, height - 1 };
+    CHAR_INFO* buffer = (CHAR_INFO*)malloc((width * 25 + 1) * height * sizeof(CHAR_INFO));
+
+    wchar_t** buffer2D = (wchar_t**)malloc(sizeof(wchar_t*) * height);
     for (int i = 0; i < height; i++)
     {
-        buffer[i] = (wchar_t*)malloc(sizeof(wchar_t) * (width * 25 + 1));
+        buffer2D[i] = (wchar_t*)malloc(sizeof(wchar_t) * (width * 25 + 1));
     }
 
+    COORD textPos = { 0, 0 };
 
     for (int i = 0; i < height; i++)
     {
-        buffer[i][0] = '\0';
+        buffer2D[i][0] = '\0';
     }
 
-    unsigned char R = 255;
-    unsigned char G = 0;
-    unsigned char B = 0;
+    WriteImageByWidth("TestImage.png", buffer2D, width, height);
 
-    for (int y = 0; y < height; y++)
-    {
-        for (int x = 0; x < width; x++)
-        {
-            int step = 100;
-            if (x < step / 6) {
-                R = 255;
-                G = (unsigned char)((255.0 * x) / (step / 6));
-                B = 0;
-            }
-            else if (x < (2 * step) / 6) {
-                R = (unsigned char)(255 - (255.0 * (x - (step / 6))) / (step / 6));
-                G = 255;
-                B = 0;
-            }
-            else if (x < (3 * step) / 6) {
-                R = 0;
-                G = 255;
-                B = (unsigned char)((255.0 * (x - (2 * step / 6))) / (step / 6));
-            }
-            else if (x < (4 * step) / 6) {
-                R = 0;
-                G = (unsigned char)(255 - (255.0 * (x - (3 * step / 6))) / (step / 6));
-                B = 255;
-            }
-            else if (x < (5 * step) / 6) {
-                R = (unsigned char)((255.0 * (x - (4 * step / 6))) / (step / 6));
-                G = 0;
-                B = 255;
-            }
-            else {
-                R = 255;
-                G = 0;
-                B = (unsigned char)(255 - (255.0 * (x - (5 * step / 6))) / (step / 6));
-            }
+    for (int i = 0; i < (width * 25 + 1) * height; i++) {
+        int y = i / (width * 25 + 1);
+        int x = i % (width * 25 + 1);
 
-            wchar_t pixel[26];
-            swprintf_s(pixel, sizeof(pixel) / sizeof(wchar_t), L"\x1b[38;2;%03hhu;%03hhu;%03hhum█ \x1b[0m", R, G, B);
-            wcscat_s(buffer[y], width * 25 + 1, pixel);
+        if (i != 0 && x == width * 25)
+            buffer[i].Char.UnicodeChar = '\n';
+        else {
+            buffer[i].Char.UnicodeChar = buffer2D[y][x];
+            buffer[i].Attributes = 0x000F;
         }
-        R = 255;
-        G = 0;
-        B = 0;
     }
 
-    for (int i = 0; i < height; i++)
-    {
-        wprintf(L"%ls\n", buffer[i]);
-;    }
+    WriteConsoleOutputW(console, buffer, bufferSize, textPos, &windowRect);
 
-    for (int i = 0; i < height; i++)
-    {
-        buffer[i][0] = '\0';
-    }
-
-    WriteImageByWidth("TestImage.png", buffer, width, height);
-
-    for (int i = 0; i < height; i++)
-    {
-        wprintf(L"%ls\n", buffer[i]);
-    }
+    free(buffer);
 }
