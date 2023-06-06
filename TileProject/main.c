@@ -154,6 +154,16 @@ void DrawPixel(CHAR_INFO* buffer, Color color, int x, int y) {
     }
 }
 
+void DrawPixelConsoleColor(CHAR_INFO* buffer, enum ConsoleColor color, int x, int y) {
+    if (x >= 0 && y >= 0 && x < SCREEN_WIDTH && y < SCREEN_HEIGHT) {
+        x *= 2;
+        buffer[y * (SCREEN_WIDTH * 2) + x].Char.UnicodeChar = L'█';
+        buffer[y * (SCREEN_WIDTH * 2) + (x + 1)].Char.UnicodeChar = L' ';
+        buffer[y * (SCREEN_WIDTH * 2) + x].Attributes = color;
+        buffer[y * (SCREEN_WIDTH * 2) + (x + 1)].Attributes = color;
+    }
+}
+
 void DrawSprite(const char* fileName, CHAR_INFO* buffer, int width, int height, int _x, int _y) {
     IplImage* image = cvLoadImage(fileName, CV_LOAD_IMAGE_UNCHANGED);
 
@@ -190,19 +200,17 @@ void ClearBuffer(CHAR_INFO* buffer) {
         int x = i % SCREEN_WIDTH;
         int y = i / SCREEN_WIDTH;
 
-        Color color = { 0, 0, 0, 255 };
-
-        DrawPixel(buffer, color, x, y);
+        DrawPixelConsoleColor(buffer, WHITE, x, y);
     }
 }
 
-void FillBuffer(CHAR_INFO* buffer, Color color) {
+void FillBuffer(CHAR_INFO* buffer, enum ConsoleColor color) {
     for (int i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++)
     {
         int x = i % SCREEN_WIDTH;
         int y = i / SCREEN_WIDTH;
 
-        DrawPixel(buffer, color, x, y);
+        DrawPixelConsoleColor(buffer, color, x, y);
     }
 }
 
@@ -296,7 +304,10 @@ int	main() {
     PlayVideo("Assets\\Videos\\Title.mp4", buffer, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0);
     while (true)
     {
+        FillBuffer(buffer, GREEN);
+        DrawSprite("Assets\\Sprites\\Glass.png", buffer, 16, 16, SCREEN_WIDTH / 2 - 8 - 16, SCREEN_HEIGHT / 2 - 8);
         DrawSprite("Assets\\Sprites\\Player.png", buffer, 16, 16, SCREEN_WIDTH / 2 - 8, SCREEN_HEIGHT / 2 - 8);
+        DrawSprite("Assets\\Sprites\\MissingTex.png", buffer, 16, 16, SCREEN_WIDTH / 2 - 8 + 16, SCREEN_HEIGHT / 2 - 8);
         WriteConsoleOutputW(hConsole, buffer, bufferSize, bufferCoord, &writeRegion);
     }
 
