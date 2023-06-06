@@ -8,6 +8,9 @@
 #include <io.h>
 #include <fcntl.h>
 
+#define SCREEN_WIDTH 300
+#define SCREEN_HEIGHT 220
+
 enum ConsoleColor {
     BLACK,
     DARK_BLUE,
@@ -33,9 +36,17 @@ typedef struct {
     unsigned char r;
     unsigned char g;
     unsigned char b;
+    unsigned char a;
+} DefineColor;
+
+typedef struct {
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+    unsigned char a;
 } Color;
 
-Color ConsoleColors[] = {
+DefineColor ConsoleColors[] = {
     {BLACK, 0, 0, 0},
     {DARK_BLUE, 0, 0, 128},
     {DARK_GREEN, 0, 128, 0},
@@ -54,16 +65,15 @@ Color ConsoleColors[] = {
     {WHITE, 255, 255, 255}
 };
 
-
 void SetCursorPosition(int x, int y) {
 	COORD pos = { x, y };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 }
 
-void SetCursorHide() {
+void SetCursorVisible(bool isVisible) {
 	CONSOLE_CURSOR_INFO cursorInfo = { 0, };
 	cursorInfo.dwSize = 1;
-	cursorInfo.bVisible = false;
+	cursorInfo.bVisible = isVisible;
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
 }
 
@@ -78,7 +88,7 @@ void EnableVitrualTerminal(bool flag) {
         dwMode &= ~ENABLE_VIRTUAL_TERMINAL_PROCESSING;
     SetConsoleMode(hOut, dwMode);
 
-    return 0;\
+    return 0;
 }
 
 void SetConsoleFont(const wchar_t* fontName) {
@@ -102,9 +112,10 @@ void SetFontSize(int size) {
     fontInfo.dwFontSize.Y = size; // 폰트의 세로 크기를 변경합니다.
 
     SetCurrentConsoleFontEx(hConsole, FALSE, &fontInfo);
+    SetConsoleFont(L"NSimSun"); // 폰트를 NsimSun으로 변경
 }
 
-double colorDistance(Color color1, Color color2) {
+double colorDistance(Color color1, DefineColor color2) {
     int dr = color1.r - color2.r;
     int dg = color1.g - color2.g;
     int db = color1.b - color2.b;
@@ -112,8 +123,8 @@ double colorDistance(Color color1, Color color2) {
     return sqrt(dr * dr + dg * dg + db * db);
 }
 
-enum ConsoleColor FindClosestConsoleColor(Color inputColor) {
-    Color closestColor = ConsoleColors[0];
+DefineColor FindClosestConsoleColor(Color inputColor) {
+    DefineColor closestColor = ConsoleColors[0];
     double minDistance = colorDistance(inputColor, closestColor);
     for (int i = 1; i < sizeof(ConsoleColors) / sizeof(ConsoleColors[0]); i++)
     {
@@ -123,13 +134,30 @@ enum ConsoleColor FindClosestConsoleColor(Color inputColor) {
             closestColor = ConsoleColors[i];
         }
     }
+    closestColor.a = inputColor.a;
 
-    return closestColor.colorTag;
+    return closestColor;
 }
 
-void WriteImageToBuffer(const char* fileName, CHAR_INFO* buffer, int width, int height) {
-    IplImage* image = cvLoadImage(fileName, 3);
-    IplImage* resizedImage = cvCreateImage(cvSize(width, height), IPL_DEPTH_8U, 3);
+void DrawPixel(CHAR_INFO* buffer, Color color, int x, int y) {
+    if (color.a < 100)
+        return;
+
+    DefineColor closestColor = FindClosestConsoleColor(color);
+
+    if(x >= 0 && y >= 0 && x < SCREEN_WIDTH && y < SCREEN_HEIGHT){
+        x *= 2;
+        buffer[y * (SCREEN_WIDTH * 2) + x].Char.UnicodeChar = L'█';
+        buffer[y * (SCREEN_WIDTH * 2) + (x + 1)].Char.UnicodeChar = L' ';
+        buffer[y * (SCREEN_WIDTH * 2) + x].Attributes = closestColor.colorTag;
+        buffer[y * (SCREEN_WIDTH * 2) + (x + 1)].Attributes = closestColor.colorTag;
+    }
+}
+
+void DrawSprite(const char* fileName, CHAR_INFO* buffer, int width, int height, int _x, int _y) {
+    IplImage* image = cvLoadImage(fileName, CV_LOAD_IMAGE_UNCHANGED);
+
+    IplImage* resizedImage = cvCreateImage(cvSize(width, height), IPL_DEPTH_8U, 4);
 
     if (!image) {
         cvSet(resizedImage, CV_RGB(255, 0, 255), NULL);
@@ -142,40 +170,62 @@ void WriteImageToBuffer(const char* fileName, CHAR_INFO* buffer, int width, int 
     {
         int x = i % width;
         int y = i / width;
+
         CvScalar value = cvGet2D(resizedImage, y, x);
         unsigned char R = value.val[2];
         unsigned char G = value.val[1];
         unsigned char B = value.val[0];
-        Color color = { UNDEFINED, R, G, B };
-        enum ConsoleColor closestColor = FindClosestConsoleColor(color);
+        unsigned char A = value.val[3];
+        Color color = {R, G, B, A};
 
-        buffer[i].Char.UnicodeChar = L'█';
-        buffer[i].Attributes = closestColor;
+        DrawPixel(buffer, color, x + _x, y + _y);
+    }
+    cvReleaseImage(&image);
+    cvReleaseImage(&resizedImage);
+}
+
+void ClearBuffer(CHAR_INFO* buffer) {
+    for (int i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++)
+    {
+        int x = i % SCREEN_WIDTH;
+        int y = i / SCREEN_WIDTH;
+
+        Color color = { 0, 0, 0, 255 };
+
+        DrawPixel(buffer, color, x, y);
     }
 }
 
-void PlaySimpleASCIIVideo(const char* videoName, CHAR_INFO* buffer, int width, int height) {
+void FillBuffer(CHAR_INFO* buffer, Color color) {
+    for (int i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++)
+    {
+        int x = i % SCREEN_WIDTH;
+        int y = i / SCREEN_WIDTH;
+
+        DrawPixel(buffer, color, x, y);
+    }
+}
+
+void PlayVideo(const char* videoName, CHAR_INFO* buffer, int width, int height, int _x, int _y) {
 
     CvCapture* capture = cvCreateFileCapture(videoName);
 
     if (!capture)
     {
-        wprintf(L"Could not open video file\n");
         return -1;
     }
 
     IplImage* frame = 0;
-    IplImage* grayFrame;
-    IplImage* outputImage;
+    IplImage* resizedImage = cvCreateImage(cvSize(width, height), IPL_DEPTH_8U, 3);
 
     float frameRate = cvGetCaptureProperty(capture, CV_CAP_PROP_FPS);
     int frameCount = cvGetCaptureProperty(capture, CV_CAP_PROP_FRAME_COUNT);
 
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);  // 표준 출력 핸들 가져오기
 
-    COORD bufferSize = { width, height };  // 버퍼 크기 설정
+    COORD bufferSize = { SCREEN_WIDTH * 2, SCREEN_HEIGHT };  // 버퍼 크기 설정
     COORD bufferCoord = { 0, 0 };  // 출력 위치 설정
-    SMALL_RECT writeRegion = { 0, 0, width - 1, height - 1 };  // 출력 영역 설정
+    SMALL_RECT writeRegion = { 0, 0, SCREEN_WIDTH * 2 - 1, SCREEN_HEIGHT - 1 };  // 출력 영역 설정
 
     int currentFrame = 0;
 
@@ -184,9 +234,9 @@ void PlaySimpleASCIIVideo(const char* videoName, CHAR_INFO* buffer, int width, i
     DWORD lastPauseTick = 0;
     while (currentFrame < frameCount)
     {
-        DWORD currentTick = GetTickCount();
+        DWORD currentTick = GetTickCount64();
 
-        if (currentTick - lastTick < 30)
+        if (currentTick - lastTick < 24)
             continue;
         lastTick = currentTick;
 
@@ -195,22 +245,20 @@ void PlaySimpleASCIIVideo(const char* videoName, CHAR_INFO* buffer, int width, i
         if (!frame)
             break;
 
-        outputImage = cvCreateImage(cvSize(width, height), IPL_DEPTH_8U, 3);
-        cvResize(frame, outputImage, CV_INTER_LINEAR);
+        cvResize(frame, resizedImage, CV_INTER_LINEAR);
 
         for (int i = 0; i < width * height; i++)
         {
             int x = i % width;
             int y = i / width;
-            CvScalar value = cvGet2D(outputImage, y, x);
+
+            CvScalar value = cvGet2D(resizedImage, y, x);
             unsigned char R = value.val[2];
             unsigned char G = value.val[1];
             unsigned char B = value.val[0];
-            Color color = { UNDEFINED, R, G, B };
-            enum ConsoleColor closestColor = FindClosestConsoleColor(color);
+            Color color = {R, G, B, 255};
 
-            buffer[i].Char.UnicodeChar = L'█';
-            buffer[i].Attributes = closestColor;
+            DrawPixel(buffer, color, x + _x, y + _y);
         }
 
         WriteConsoleOutputW(hConsole, buffer, bufferSize, bufferCoord, &writeRegion);
@@ -218,12 +266,12 @@ void PlaySimpleASCIIVideo(const char* videoName, CHAR_INFO* buffer, int width, i
     }
 
     // 메모리 할당 해제
-
     cvReleaseCapture(&capture);
+    cvReleaseImage(&resizedImage);
 }
 
 void Init() {
-    SetCursorHide();
+    SetCursorVisible(false);
     SetFontSize(12);
     setlocale(LC_ALL, ""); // 언어 설정을 현재 컴퓨터의 언어설정으로 변경
     wprintf(L"언어 설정 변경 됨\n");
@@ -231,38 +279,32 @@ void Init() {
     wprintf(L"Virtual Terminal 활성화\n");
     _setmode(_fileno(stdout), _O_U16TEXT); // 기본 변환 모드를 유니코드로 설정
     wprintf(L"출력모드 유니코드로 설정\n");
-    SetConsoleFont(L"NSimSun"); // 폰트를 NsimSun으로 변경
     wprintf(L"현재 폰트 NSimSun으로 변경\n");
-
 }
 
 int	main() {
     Init();
 
-    const int width = 240 * 2;
-    const int height = 135;
-
     char commandMessage[150] = "";
     SetFontSize(4);
-    sprintf_s(commandMessage, sizeof(commandMessage), "mode con cols=%d lines=%d", width, height);
+    sprintf_s(commandMessage, sizeof(commandMessage), "mode con cols=%d lines=%d", SCREEN_WIDTH * 2, SCREEN_HEIGHT);
     system(commandMessage);
 
     // 동적으로 CHAR_INFO 배열 생성
-    CHAR_INFO* buffer = (CHAR_INFO*)malloc(sizeof(CHAR_INFO) * width * height);
+    CHAR_INFO* buffer = (CHAR_INFO*)malloc(sizeof(CHAR_INFO) * SCREEN_WIDTH * 2 * SCREEN_HEIGHT);
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);  // 표준 출력 핸들 가져오기
 
-    COORD bufferSize = { width, height };  // 버퍼 크기 설정
+    COORD bufferSize = { SCREEN_WIDTH * 2, SCREEN_HEIGHT };  // 버퍼 크기 설정
     COORD bufferCoord = { 0, 0 };  // 출력 위치 설정
-    SMALL_RECT writeRegion = { 0, 0, width - 1, height - 1 };  // 출력 영역 설정
+    SMALL_RECT writeRegion = { 0, 0, SCREEN_WIDTH * 2 - 1, SCREEN_HEIGHT - 1 };  // 출력 영역 설정
 
-    bool flag = true;
+
+    PlayVideo("Assets\\Videos\\Title.mp4", buffer, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0);
     while (true)
     {
-        PlaySimpleASCIIVideo("Asset\\Videos\\Title.mp4", buffer, width, height);
-        WriteImageToBuffer("Asset\\Images\\Engine_Logo.png", buffer, width, height);
-
+        ClearBuffer(buffer);
+        DrawSprite("Assets\\Sprites\\MissingTex.png", buffer, 16, 16, 235, 2);
         WriteConsoleOutputW(hConsole, buffer, bufferSize, bufferCoord, &writeRegion);
-        flag = !flag;
     }
 
     // 동적으로 할당된 배열 해제
