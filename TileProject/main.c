@@ -140,7 +140,7 @@ DefineColor FindClosestConsoleColor(Color inputColor) {
 }
 
 void DrawPixel(CHAR_INFO* buffer, Color color, int x, int y) {
-    if (color.a < 100)
+    if (color.a < 255)
         return;
 
     DefineColor closestColor = FindClosestConsoleColor(color);
@@ -271,24 +271,18 @@ void PlayVideo(const char* videoName, CHAR_INFO* buffer, int width, int height, 
 }
 
 void Init() {
-    SetCursorVisible(false);
-    SetFontSize(12);
-    setlocale(LC_ALL, ""); // 언어 설정을 현재 컴퓨터의 언어설정으로 변경
-    wprintf(L"언어 설정 변경 됨\n");
-    EnableVitrualTerminal(true); // Virtual Terminal 활성화, ANSI escape code 사용 가능하게 만듦
-    wprintf(L"Virtual Terminal 활성화\n");
-    _setmode(_fileno(stdout), _O_U16TEXT); // 기본 변환 모드를 유니코드로 설정
-    wprintf(L"출력모드 유니코드로 설정\n");
-    wprintf(L"현재 폰트 NSimSun으로 변경\n");
-}
-
-int	main() {
-    Init();
-
     char commandMessage[150] = "";
     SetFontSize(4);
     sprintf_s(commandMessage, sizeof(commandMessage), "mode con cols=%d lines=%d", SCREEN_WIDTH * 2, SCREEN_HEIGHT);
     system(commandMessage);
+    SetCursorVisible(false);
+    setlocale(LC_ALL, ""); // 언어 설정을 현재 컴퓨터의 언어설정으로 변경
+    EnableVitrualTerminal(true); // Virtual Terminal 활성화, ANSI escape code 사용 가능하게 만듦
+    _setmode(_fileno(stdout), _O_U16TEXT); // 기본 변환 모드를 유니코드로 설정
+}
+
+int	main() {
+    Init();
 
     // 동적으로 CHAR_INFO 배열 생성
     CHAR_INFO* buffer = (CHAR_INFO*)malloc(sizeof(CHAR_INFO) * SCREEN_WIDTH * 2 * SCREEN_HEIGHT);
@@ -302,8 +296,7 @@ int	main() {
     PlayVideo("Assets\\Videos\\Title.mp4", buffer, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0);
     while (true)
     {
-        ClearBuffer(buffer);
-        DrawSprite("Assets\\Sprites\\MissingTex.png", buffer, 16, 16, 235, 2);
+        DrawSprite("Assets\\Sprites\\Player.png", buffer, 16, 16, SCREEN_WIDTH / 2 - 8, SCREEN_HEIGHT / 2 - 8);
         WriteConsoleOutputW(hConsole, buffer, bufferSize, bufferCoord, &writeRegion);
     }
 
