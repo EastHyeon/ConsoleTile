@@ -11,6 +11,11 @@
 #define SCREEN_WIDTH 300
 #define SCREEN_HEIGHT 220
 
+#define VK_W 0x57
+#define VK_S 0x53
+#define VK_A 0x41
+#define VK_D 0x44
+
 enum ConsoleColor {
     BLACK,
     DARK_BLUE,
@@ -31,6 +36,11 @@ enum ConsoleColor {
     UNDEFINED
 };
 
+enum ObjectID {
+    AIR,
+    SOLID,
+};
+
 typedef struct {
     enum ConsoleColor colorTag;
     unsigned char r;
@@ -45,6 +55,7 @@ typedef struct {
     unsigned char b;
     unsigned char a;
 } Color;
+
 
 DefineColor ConsoleColors[] = {
     {BLACK, 0, 0, 0},
@@ -77,18 +88,22 @@ void SetCursorVisible(bool isVisible) {
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
 }
 
-void EnableVitrualTerminal(bool flag) {
+void EnableVitrualTerminal() {
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-    DWORD dwMode = 0;
+    DWORD dwMode;
 
     GetConsoleMode(hOut, &dwMode);
-    if(flag)
-        dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-    else
-        dwMode &= ~ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-    SetConsoleMode(hOut, dwMode);
+    SetConsoleMode(hOut, dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING);
 
     return 0;
+}
+
+void DisableQuickEditMode() {
+    HANDLE hOut = GetStdHandle(STD_INPUT_HANDLE);
+    DWORD consoleModePrev;
+
+    GetConsoleMode(hOut, &consoleModePrev);
+    SetConsoleMode(hOut, consoleModePrev & ~ENABLE_QUICK_EDIT_MODE);
 }
 
 void SetConsoleFont(const wchar_t* fontName) {
@@ -204,6 +219,16 @@ void ClearBuffer(CHAR_INFO* buffer) {
     }
 }
 
+void InitColiderBuffer(enum ObjectID* buffer) {
+    for (int i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++)
+    {
+        int x = i % SCREEN_WIDTH;
+        int y = i / SCREEN_WIDTH;
+
+        buffer[y * (SCREEN_WIDTH * 2) + x] = AIR;
+    }
+}
+
 void FillBuffer(CHAR_INFO* buffer, enum ConsoleColor color) {
     for (int i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++)
     {
@@ -285,8 +310,11 @@ void Init() {
     system(commandMessage);
     SetCursorVisible(false);
     setlocale(LC_ALL, ""); // 언어 설정을 현재 컴퓨터의 언어설정으로 변경
-    EnableVitrualTerminal(true); // Virtual Terminal 활성화, ANSI escape code 사용 가능하게 만듦
+    EnableVitrualTerminal(); // Virtual Terminal 활성화, ANSI escape code 사용 가능하게 만듦
+    DisableQuickEditMode(); // Quick Edit Mode 비활성화
     _setmode(_fileno(stdout), _O_U16TEXT); // 기본 변환 모드를 유니코드로 설정
+    wchar_t Title[50] = L"BitEngine";
+    SetConsoleTitleW(Title);
 }
 
 int	main() {
@@ -294,19 +322,45 @@ int	main() {
 
     // 동적으로 CHAR_INFO 배열 생성
     CHAR_INFO* buffer = (CHAR_INFO*)malloc(sizeof(CHAR_INFO) * SCREEN_WIDTH * 2 * SCREEN_HEIGHT);
+    enum ObjectID* coliderBuffer = (enum ObjectID*)malloc(sizeof(enum ObjectID) * SCREEN_WIDTH * 2 * SCREEN_HEIGHT);
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);  // 표준 출력 핸들 가져오기
 
     COORD bufferSize = { SCREEN_WIDTH * 2, SCREEN_HEIGHT };  // 버퍼 크기 설정
     COORD bufferCoord = { 0, 0 };  // 출력 위치 설정
     SMALL_RECT writeRegion = { 0, 0, SCREEN_WIDTH * 2 - 1, SCREEN_HEIGHT - 1 };  // 출력 영역 설정
+    
+    int playerPosX = 0;
+    int playerPosY = 0;
 
+    DWORD currentTick = 0;
+    DWORD lastInputTick = 0;
 
     PlayVideo("Assets\\Videos\\Title.mp4", buffer, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0);
     while (true)
     {
+        currentTick = GetTickCount64();
+        if (currentTick - lastInputTick > 10) {
+            if(GetAsyncKeyState(VK_UP) & 0x8001 || GetAsyncKeyState(VK_W) & 0x8001) {
+                if(playerPosY - 1 > 0)
+                    playerPosY--;
+            }
+            if(GetAsyncKeyState(VK_DOWN ) & 0x8001 || GetAsyncKeyState(VK_S) & 0x8001) {
+                if(playerPosY + 1 < SCREEN_HEIGHT - 16)
+                    playerPosY++;
+            }
+            if (GetAsyncKeyState(VK_LEFT) & 0x8001 || GetAsyncKeyState(VK_A) & 0x8001) {
+                if(playerPosX - 2 > 0)
+                    playerPosX--;
+            }
+            if (GetAsyncKeyState(VK_RIGHT) & 0x8001 || GetAsyncKeyState(VK_D) & 0x8001) {
+                if(playerPosX + 2 < SCREEN_WIDTH - 16)
+                    playerPosX++;
+            }
+            lastInputTick = currentTick;
+        }
         FillBuffer(buffer, GREEN);
         DrawSprite("Assets\\Sprites\\Glass.png", buffer, 16, 16, SCREEN_WIDTH / 2 - 8 - 16, SCREEN_HEIGHT / 2 - 8);
-        DrawSprite("Assets\\Sprites\\Player.png", buffer, 16, 16, SCREEN_WIDTH / 2 - 8, SCREEN_HEIGHT / 2 - 8);
+        DrawSprite("Assets\\Sprites\\Player.png", buffer, 16, 16, playerPosX, playerPosY);
         DrawSprite("Assets\\Sprites\\MissingTex.png", buffer, 16, 16, SCREEN_WIDTH / 2 - 8 + 16, SCREEN_HEIGHT / 2 - 8);
         WriteConsoleOutputW(hConsole, buffer, bufferSize, bufferCoord, &writeRegion);
     }
