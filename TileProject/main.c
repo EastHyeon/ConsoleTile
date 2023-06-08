@@ -56,6 +56,20 @@ typedef struct {
     unsigned char a;
 } Color;
 
+typedef struct {
+    float x;
+    float y;
+    float z;
+} Vector3;
+
+typedef struct {
+    float x;
+    float y;
+    void (*normalize)(struct Vector2);
+} Vector2;
+
+void normalize(Vector2 vector2) {
+}
 
 DefineColor ConsoleColors[] = {
     {BLACK, 0, 0, 0},
@@ -209,6 +223,37 @@ void DrawSprite(const char* fileName, CHAR_INFO* buffer, int width, int height, 
     cvReleaseImage(&resizedImage);
 }
 
+void DrawTextSprite(const char* textSpriteAdress, CHAR_INFO* buffer, enum ConsoleColor color, int index, int _x, int _y) {
+    IplImage* image = cvLoadImage(textSpriteAdress, CV_LOAD_IMAGE_UNCHANGED);
+
+    int width = 5;
+    int height = 7;
+
+    if (!image)
+        return;    
+
+    int spriteWidth = image->width;
+
+    index *= 5;
+
+    if (index > spriteWidth - 5)
+        index = 0;
+
+    for (int i = 0; i < width * height; i++)
+    {
+        int indexX = (i % width) + index;
+        int x = (i % width);
+        int y = (i / width);
+
+        CvScalar value = cvGet2D(image, y, indexX);
+        unsigned char A = value.val[3];
+
+        if (A > 254)
+            DrawPixelConsoleColor(buffer, color, x + _x, y + _y);
+    }
+    cvReleaseImage(&image);
+}
+
 void ClearBuffer(CHAR_INFO* buffer) {
     for (int i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++)
     {
@@ -236,6 +281,282 @@ void FillBuffer(CHAR_INFO* buffer, enum ConsoleColor color) {
         int y = i / SCREEN_WIDTH;
 
         DrawPixelConsoleColor(buffer, color, x, y);
+    }
+}
+
+void DrawChar(char character, CHAR_INFO* buffer, enum ConsoleColor color, int _x, int _y) {
+    switch (character)
+    {
+    case 'A':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 1, _x, _y);
+        break;
+    case 'B':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 2, _x, _y);
+        break;
+    case 'C':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 3, _x, _y);
+        break;
+    case 'D':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 4, _x, _y);
+        break;
+    case 'E':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 5, _x, _y);
+        break;
+    case 'F':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 6, _x, _y);
+        break;
+    case 'G':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 7, _x, _y);
+        break;
+    case 'H':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 8, _x, _y);
+        break;
+    case 'I':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 9, _x, _y);
+        break;
+    case 'J':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 10, _x, _y);
+        break;
+    case 'K':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 11, _x, _y);
+        break;
+    case 'L':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 12, _x, _y);
+        break;
+    case 'M':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 13, _x, _y);
+        break;
+    case 'N':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 14, _x, _y);
+        break;
+    case 'O':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 15, _x, _y);
+        break;
+    case 'P':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 16, _x, _y);
+        break;
+    case 'Q':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 17, _x, _y);
+        break;
+    case 'R':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 18, _x, _y);
+        break;
+    case 'S':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 19, _x, _y);
+        break;
+    case 'T':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 20, _x, _y);
+        break;
+    case 'U':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 21, _x, _y);
+        break;
+    case 'V':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 22, _x, _y);
+        break;
+    case 'W':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 23, _x, _y);
+        break;
+    case 'X':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 24, _x, _y);
+        break;
+    case 'Y':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 25, _x, _y);
+        break;
+    case 'Z':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 26, _x, _y);
+        break;
+    case 'a':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 27, _x, _y);
+        break;
+    case 'b':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 28, _x, _y);
+        break;
+    case 'c':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 29, _x, _y);
+        break;
+    case 'd':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 30, _x, _y);
+        break;
+    case 'e':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 31, _x, _y);
+        break;
+    case 'f':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 32, _x, _y);
+        break;
+    case 'g':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 33, _x, _y);
+        break;
+    case 'h':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 34, _x, _y);
+        break;
+    case 'i':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 35, _x, _y);
+        break;
+    case 'j':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 36, _x, _y);
+        break;
+    case 'k':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 37, _x, _y);
+        break;
+    case 'l':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 38, _x, _y);
+        break;
+    case 'm':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 39, _x, _y);
+        break;
+    case 'n':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 40, _x, _y);
+        break;
+    case 'o':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 41, _x, _y);
+        break;
+    case 'p':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 42, _x, _y);
+        break;
+    case 'q':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 43, _x, _y);
+        break;
+    case 'r':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 44, _x, _y);
+        break;
+    case 's':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 45, _x, _y);
+        break;  
+    case 't':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 46, _x, _y);
+        break;  
+    case 'u':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 47, _x, _y);
+        break;  
+    case 'v':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 48, _x, _y);
+        break;  
+    case 'w':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 49, _x, _y);
+        break;  
+    case 'x':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 50, _x, _y);
+        break;  
+    case 'y':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 51, _x, _y);
+        break;  
+    case 'z':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 52, _x, _y);
+        break;
+    case '0':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 53, _x, _y);
+        break;
+    case '1':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 54, _x, _y);
+        break;
+    case '2':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 55, _x, _y);
+        break;
+    case '3':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 56, _x, _y);
+        break;
+    case '4':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 57, _x, _y);
+        break;
+    case '5':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 58, _x, _y);
+        break;
+    case '6':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 59, _x, _y);
+        break;
+    case '7':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 60, _x, _y);
+        break;
+    case '8':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 61, _x, _y);
+        break;
+    case '9':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 62, _x, _y);
+        break;
+    case '!':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 63, _x, _y);
+        break;
+    case '?':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 64, _x, _y);
+        break;
+    case ',':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 65, _x, _y);
+        break;
+    case '.':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 66, _x, _y);
+        break;
+    case ':':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 67, _x, _y);
+        break;
+    case ';':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 68, _x, _y);
+        break;
+    case '#':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 69, _x, _y);
+        break;
+    case '(':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 70, _x, _y);
+        break;
+    case ')':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 71, _x, _y);
+        break;
+    case '[':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 72, _x, _y);
+        break;
+    case ']':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 73, _x, _y);
+        break;
+    case '<':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 74, _x, _y);
+        break;
+    case '>':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 75, _x, _y);
+        break;
+    case '-':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 76, _x, _y);
+        break;
+    case '+':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 77, _x, _y);
+        break;
+    case '=':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 78, _x, _y);
+        break;
+    case '|':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 79, _x, _y);
+        break;
+    case '_':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 80, _x, _y);
+        break;
+    case '%':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 81, _x, _y);
+        break;
+    case '/':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 82, _x, _y);
+        break;
+    case '\'':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 83, _x, _y);
+        break;
+    case '\"':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 84, _x, _y);
+        break;
+    case '@':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 85, _x, _y);
+        break;
+    case '~':
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 86, _x, _y);
+        break;
+    case ' ':
+        break;
+    default:
+        DrawTextSprite("Assets\\Sprites\\Text.png", buffer, color, 0, _x, _y);
+        break;
+    }
+}
+
+void DrawString(const char* string, CHAR_INFO* buffer, enum ConsoleColor color, int _x, int _y) {
+    for (int i = 0; i < strlen(string); i++)
+    {
+        DrawChar(string[i], buffer, color, _x + (i * 6), _y);
     }
 }
 
@@ -320,8 +641,17 @@ void Init() {
 int	main() {
     Init();
 
+    POINT point;
+    HWND hWnd;
+    int width = 0;
+    RECT window_size;
+
+    point.x = 0;
+    point.y = 0;
+
     // 동적으로 CHAR_INFO 배열 생성
     CHAR_INFO* buffer = (CHAR_INFO*)malloc(sizeof(CHAR_INFO) * SCREEN_WIDTH * 2 * SCREEN_HEIGHT);
+
     enum ObjectID* coliderBuffer = (enum ObjectID*)malloc(sizeof(enum ObjectID) * SCREEN_WIDTH * 2 * SCREEN_HEIGHT);
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);  // 표준 출력 핸들 가져오기
 
@@ -332,16 +662,25 @@ int	main() {
     int playerPosX = 0;
     int playerPosY = 0;
 
+    Vector2 vector2 = { 0, 0 };
+
     DWORD currentTick = 0;
     DWORD lastInputTick = 0;
 
     PlayVideo("Assets\\Videos\\Title.mp4", buffer, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0);
     while (true)
     {
+        GetCursorPos(&point);
+        hWnd = WindowFromPoint(point);
+        hWnd = WindowFromPoint(point);
+        ScreenToClient(hWnd, &point);
+        GetWindowRect(hWnd, &window_size);
+        width = (window_size.right - window_size.left);
+
         currentTick = GetTickCount64();
         if (currentTick - lastInputTick > 10) {
             if(GetAsyncKeyState(VK_UP) & 0x8001 || GetAsyncKeyState(VK_W) & 0x8001) {
-                if(playerPosY - 1 > 0)
+                if(playerPosY  > 0)
                     playerPosY--;
             }
             if(GetAsyncKeyState(VK_DOWN ) & 0x8001 || GetAsyncKeyState(VK_S) & 0x8001) {
@@ -349,7 +688,7 @@ int	main() {
                     playerPosY++;
             }
             if (GetAsyncKeyState(VK_LEFT) & 0x8001 || GetAsyncKeyState(VK_A) & 0x8001) {
-                if(playerPosX - 2 > 0)
+                if(playerPosX > 0)
                     playerPosX--;
             }
             if (GetAsyncKeyState(VK_RIGHT) & 0x8001 || GetAsyncKeyState(VK_D) & 0x8001) {
@@ -358,10 +697,19 @@ int	main() {
             }
             lastInputTick = currentTick;
         }
-        FillBuffer(buffer, GREEN);
+
+        char msg[100];
+
+        FillBuffer(buffer, DARK_GRAY);
         DrawSprite("Assets\\Sprites\\Glass.png", buffer, 16, 16, SCREEN_WIDTH / 2 - 8 - 16, SCREEN_HEIGHT / 2 - 8);
         DrawSprite("Assets\\Sprites\\Player.png", buffer, 16, 16, playerPosX, playerPosY);
         DrawSprite("Assets\\Sprites\\MissingTex.png", buffer, 16, 16, SCREEN_WIDTH / 2 - 8 + 16, SCREEN_HEIGHT / 2 - 8);
+
+        sprintf_s(msg, sizeof(msg), "Mouse postion (%d / %d)", point.x / 4, point.y / 4);
+        DrawString(msg, buffer, WHITE, 1, 1);
+        sprintf_s(msg, sizeof(msg), "Player postion (%d / %d)", playerPosX, playerPosY);
+        DrawString(msg, buffer, WHITE, 1, 9);
+
         WriteConsoleOutputW(hConsole, buffer, bufferSize, bufferCoord, &writeRegion);
     }
 
