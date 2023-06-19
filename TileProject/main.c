@@ -6,7 +6,6 @@
 #include <time.h>
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
-#include <io.h>
 #include <fcntl.h>
 
 // 인클루드 가드
@@ -1852,7 +1851,7 @@ int	main() {
     CHAR_INFO* buffer = (CHAR_INFO*)malloc(sizeof(CHAR_INFO) * SCREEN_WIDTH * 2 * SCREEN_HEIGHT);
 
     enum GameState gameState = GS_TitleMenu;
-
+    PlayVideo("Assets\\Title.mp4", buffer, 144, 144, 0, 0);
     while (1)
     {
         switch (gameState)
