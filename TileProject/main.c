@@ -8,7 +8,6 @@
 #include <opencv/highgui.h>
 #include <io.h>
 #include <fcntl.h>
-#include "data.h"
 
 // 인클루드 가드
 #define HAVE_STRUCT_TIMESPEC
