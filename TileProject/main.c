@@ -6,8 +6,8 @@
 #include <time.h>
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
+#include <io.h>
 #include <fcntl.h>
-
 // 인클루드 가드
 #define HAVE_STRUCT_TIMESPEC
 
@@ -1130,17 +1130,17 @@ void Init() {
     DWORD consoleModePrev;
     setlocale(LC_ALL, ""); // 언어 설정을 현재 컴퓨터의 언어설정으로 변경
 
-    SMALL_RECT windowRect = { 0, 0, SCREEN_WIDTH * 2 - 1, SCREEN_HEIGHT };  // 예시로 가로 80, 세로 30의 크기로 설정
-    COORD bufferSize = { SCREEN_WIDTH * 2 , SCREEN_HEIGHT + 1 };  // 버퍼 크기와 콘솔 창 크기를 동일하게 설정
-    SetConsoleWindowInfo(consoleOutputHandle, TRUE, &windowRect);
-    SetConsoleScreenBufferSize(consoleOutputHandle, bufferSize);
-
     _setmode(_fileno(stdout), _O_U16TEXT); // 기본 변환 모드를 유니코드로 설정
     wchar_t Title[50] = L"RUNEWORLD";
     SetConsoleTitleW(Title);
     SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), ENABLE_PROCESSED_INPUT | ENABLE_MOUSE_INPUT);
     GetConsoleMode(consoleInputHandle, &consoleModePrev);
     SetConsoleMode(consoleInputHandle, consoleModePrev & ~ENABLE_QUICK_EDIT_MODE);
+    COORD bufferSize = { SCREEN_WIDTH * 2 , SCREEN_HEIGHT + 1 };  // 버퍼 크기와 콘솔 창 크기를 동일하게 설정
+
+    RECT rect;
+
+    GetWindowRect(hWnd, &rect);
 
     // 수직 스크롤바 숨기기
     CONSOLE_SCREEN_BUFFER_INFOEX infoEx;
@@ -1148,6 +1148,9 @@ void Init() {
     GetConsoleScreenBufferInfoEx(consoleOutputHandle, &infoEx);
     infoEx.dwSize.Y = bufferSize.Y - 1;  // 버퍼의 세로 크기를 콘솔 창의 세로 크기와 동일하게 설정
     SetConsoleScreenBufferInfoEx(consoleOutputHandle, &infoEx);
+
+    MoveWindow(hWnd, rect.left, rect.top, SCREEN_WIDTH * 6 + 17, SCREEN_HEIGHT * 6 + 40, TRUE);
+
 }
 
 void* GetMouseStateThread(void* arg) {
@@ -1368,7 +1371,7 @@ enum GameState Game() {
     const int maxMoney = 100;
     Player player = { maxHP, 5, {SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2} };
 
-    int slashDamage = 1;
+    int slashDamage = 2;
 
     Vector2 playerDirection = { 0, 0 };
 
@@ -1504,7 +1507,8 @@ enum GameState Game() {
                                 clickState = 0;
                                 if (player.point >= 4) {
                                     player.point -= 4;
-                                    slashSize += 2;
+                                    if(slashSize < 300)
+                                        slashSize += 4;
                                 }
                             }
                             else if (mouseX > 4 && mouseX < 83 && mouseY > 9 && mouseY < 23) {
@@ -1609,8 +1613,6 @@ enum GameState Game() {
                                     enemy[i].hp = enemy[i].maxHP;
                                     enemy[i].position.x = rand() % 382 + 1;
                                     enemy[i].position.y = rand() % 382 + 1;
-                                    if (slashSize < 150)
-                                        slashSize += 2;
                                     player.point++;
                                 }
                                 enemy[i].isDamaged = true;
@@ -1630,8 +1632,6 @@ enum GameState Game() {
                                     enemy[i].hp = enemy[i].maxHP;
                                     enemy[i].position.x = rand() % 382 + 1;
                                     enemy[i].position.y = rand() % 382 + 1;
-                                    if (slashSize < 150)
-                                        slashSize += 2;
                                     player.point++;
                                 }
                                 enemy[i].isDamaged = true;
@@ -1651,8 +1651,6 @@ enum GameState Game() {
                                     enemy[i].hp = enemy[i].maxHP;
                                     enemy[i].position.x = rand() % 382 + 1;
                                     enemy[i].position.y = rand() % 382 + 1;
-                                    if (slashSize < 150)
-                                        slashSize += 2;
                                     player.point++;
                                 }
                                 enemy[i].isDamaged = true;
@@ -1672,8 +1670,6 @@ enum GameState Game() {
                                     enemy[i].hp = enemy[i].maxHP;
                                     enemy[i].position.x = rand() % 382 + 1;
                                     enemy[i].position.y = rand() % 382 + 1;
-                                    if (slashSize < 150)
-                                        slashSize += 2;
                                     player.point++;
                                 }
                                 enemy[i].isDamaged = true;
