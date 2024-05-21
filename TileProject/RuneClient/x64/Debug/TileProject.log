@@ -1,0 +1,85 @@
+﻿  main.c
+C:\.DEV\ConsoleTile\TileProject\main.c(129,23): warning C4013: 'Magnitude'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(129,23): warning C4244: '초기화 중': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(138,33): warning C4142: 'Magnitude': 형식이 재정의되었지만 심각하지는 않습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(139,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(224,21): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(225,21): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(335,9): warning C4033: 'GetCollisionBySprite'은(는) 값을 반환해야 합니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(363,88): warning C4020: 'GetColiderObjectID': 실제 매개 변수가 너무 많습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(632,9): warning C4033: 'DrawColiderBySprite'은(는) 값을 반환해야 합니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(683,9): warning C4033: 'DrawColiderBySpriteWithID'은(는) 값을 반환해야 합니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(713,21): warning C4101: 'closestColor' :참조되지 않은 지역 변수입니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(723,9): warning C4033: 'DrawColiderBySpriteByZero'은(는) 값을 반환해야 합니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(777,86): warning C4020: 'DrawPixelColiderBySize': 실제 매개 변수가 너무 많습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1060,18): warning C4098: 'PlayVideo': 'void' 함수에서 값을 반환하고 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1066,23): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1067,22): warning C4244: '초기화 중': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1082,29): warning C4244: '초기화 중': 'ULONGLONG'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1101,40): warning C4244: '초기화 중': 'double'에서 'unsigned char'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1102,40): warning C4244: '초기화 중': 'double'에서 'unsigned char'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1103,40): warning C4244: '초기화 중': 'double'에서 'unsigned char'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1204,10): warning C4101: 'msg' :참조되지 않은 지역 변수입니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1387,44): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1388,44): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1389,120): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1389,141): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1390,117): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1390,136): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1391,48): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1392,48): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1475,86): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1475,105): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1582,122): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1582,141): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1591,99): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1591,120): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1592,132): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1592,153): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1605,125): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1605,147): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1608,160): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1608,182): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1614,72): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1615,72): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1624,128): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1624,149): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1627,163): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1627,184): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1633,72): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1634,72): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1643,125): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1643,147): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1646,160): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1646,182): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1652,72): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1653,72): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1662,128): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1662,149): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1665,163): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1665,184): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1671,72): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1672,72): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1688,86): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1688,116): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1748,128): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1748,147): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1751,109): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1751,128): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1755,105): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1755,124): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1776,126): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1776,147): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1779,107): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1779,128): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1785,122): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1785,141): warning C4244: '함수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1687,44): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1808,36): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(1813,37): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(311,1): warning C4715: 'GetColiderObjectID': 모든 제어 경로에서 값을 반환하지는 않습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(371,1): warning C4715: 'GetCollisionBySprite': 모든 제어 경로에서 값을 반환하지는 않습니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(719,1): warning C4716: 'DrawColiderBySpriteWithID': 값을 반환해야 합니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(679,1): warning C4716: 'DrawColiderBySprite': 값을 반환해야 합니다.
+C:\.DEV\ConsoleTile\TileProject\main.c(767,1): warning C4716: 'DrawColiderBySpriteByZero': 값을 반환해야 합니다.
+  TileProject.vcxproj -> C:\.DEV\ConsoleTile\TileProject\x64\Debug\RuneClient.exe
